@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Billing Dashboard</title></head>
+<body>
+  <h1>Billing Dashboard</h1>
+  <div id="total">Loading…</div>
+  <table id="by-service"></table>
+<script>
+async function load(){
+  const resp = await fetch('http://my-billing-dashboard-aj.s3-website-us-east-1.amazonaws.com/dashboard/summary.json');
+  const data = await resp.json();
+  document.getElementById('total').innerText = 'Total: $' + (data.total_cost||0).toFixed(2);
+  const table = document.getElementById('by-service');
+  table.innerHTML = '<tr><th>Service</th><th>Cost</th></tr>';
+  Object.entries(data.by_service||{}).forEach(([k,v])=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${k}</td><td>$${v.toFixed(2)}</td>`;
+    table.appendChild(tr);
+  });
+}
+load();
+</script>
+</body>
+</html>
